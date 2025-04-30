@@ -446,6 +446,8 @@ class _NewInvoiceScreenState extends State<NewInvoiceScreen> {
                         );
                       },
                     ),
+                    // Add padding at the bottom to prevent overlap with the floating action button
+                    const SizedBox(height: 80),
                   ],
                 ),
               ),

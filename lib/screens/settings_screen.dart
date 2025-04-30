@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import '../providers/theme_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -13,7 +15,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _companyAddressController = TextEditingController();
   final _companyPhoneController = TextEditingController();
   final _companyGstinController = TextEditingController();
-  bool _isDarkMode = false;
   bool _isLoading = true;
 
   @override
@@ -32,7 +33,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _companyAddressController.text = prefs.getString('company_address') ?? '';
         _companyPhoneController.text = prefs.getString('company_phone') ?? '';
         _companyGstinController.text = prefs.getString('company_gstin') ?? '';
-        _isDarkMode = prefs.getBool('dark_mode') ?? false;
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -52,7 +52,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await prefs.setString('company_address', _companyAddressController.text);
       await prefs.setString('company_phone', _companyPhoneController.text);
       await prefs.setString('company_gstin', _companyGstinController.text);
-      await prefs.setBool('dark_mode', _isDarkMode);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -81,6 +80,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -151,11 +152,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SwitchListTile(
                     title: const Text('Dark Mode'),
                     subtitle: const Text('Enable dark theme for the app'),
-                    value: _isDarkMode,
+                    value: themeProvider.isDarkMode,
                     onChanged: (value) {
-                      setState(() {
-                        _isDarkMode = value;
-                      });
+                      themeProvider.toggleTheme();
                     },
                   ),
                   const SizedBox(height: 30),
