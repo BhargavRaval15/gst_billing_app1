@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import '../models/product.dart';
-import '../services/database_service.dart';
+import '../services/firestore_service.dart';
 
 class ProductProvider with ChangeNotifier {
-  final DatabaseService _databaseService = DatabaseService();
+  final FirestoreService _firestoreService = FirestoreService();
   List<Product> _products = [];
   bool _isLoading = false;
 
@@ -19,7 +19,7 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
     
     try {
-      _products = await _databaseService.getProducts();
+      _products = await _firestoreService.getProducts();
     } catch (e) {
       print('Error loading products: $e');
     } finally {
@@ -30,7 +30,7 @@ class ProductProvider with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     try {
-      await _databaseService.insertProduct(product);
+      await _firestoreService.addProduct(product);
       _products.add(product);
       notifyListeners();
     } catch (e) {
@@ -41,7 +41,7 @@ class ProductProvider with ChangeNotifier {
 
   Future<void> updateProduct(Product product) async {
     try {
-      await _databaseService.updateProduct(product);
+      await _firestoreService.updateProduct(product);
       final index = _products.indexWhere((p) => p.id == product.id);
       if (index != -1) {
         _products[index] = product;
@@ -55,7 +55,7 @@ class ProductProvider with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     try {
-      await _databaseService.deleteProduct(id);
+      await _firestoreService.deleteProduct(id);
       _products.removeWhere((product) => product.id == id);
       notifyListeners();
     } catch (e) {

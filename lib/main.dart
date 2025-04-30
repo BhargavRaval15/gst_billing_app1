@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'providers/product_provider.dart';
 import 'providers/invoice_provider.dart';
 import 'providers/cart_provider.dart';
@@ -8,6 +9,19 @@ import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Firebase
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyCL7jVqEjY7Y8BGCMO4HFlGCug-dUfTR7Q",
+      authDomain: "gst-billing-app-286ae.firebaseapp.com",
+      projectId: "gst-billing-app-286ae",
+      storageBucket: "gst-billing-app-286ae.firebasestorage.app",
+      messagingSenderId: "931849124325",
+      appId: "1:931849124325:web:879190b60dd6a02bacd70c",
+      measurementId: "G-CNE0Q7JDF8",
+    ),
+  );
   
   final prefs = await SharedPreferences.getInstance();
   final isDarkMode = prefs.getBool('dark_mode') ?? false;

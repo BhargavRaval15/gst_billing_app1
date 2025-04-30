@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import '../models/invoice.dart';
 import '../models/invoice_item.dart';
-import '../services/database_service.dart';
+import '../services/firestore_service.dart';
 
 class InvoiceProvider with ChangeNotifier {
-  final DatabaseService _databaseService = DatabaseService();
+  final FirestoreService _firestoreService = FirestoreService();
   List<Invoice> _invoices = [];
   bool _isLoading = false;
 
@@ -20,7 +20,7 @@ class InvoiceProvider with ChangeNotifier {
     notifyListeners();
     
     try {
-      _invoices = await _databaseService.getInvoices();
+      _invoices = await _firestoreService.getInvoices();
     } catch (e) {
       print('Error loading invoices: $e');
     } finally {
@@ -31,7 +31,7 @@ class InvoiceProvider with ChangeNotifier {
 
   Future<void> addInvoice(Invoice invoice) async {
     try {
-      await _databaseService.insertInvoice(invoice);
+      await _firestoreService.addInvoice(invoice);
       _invoices.add(invoice);
       notifyListeners();
     } catch (e) {
@@ -42,7 +42,7 @@ class InvoiceProvider with ChangeNotifier {
 
   Future<void> deleteInvoice(String id) async {
     try {
-      await _databaseService.deleteInvoice(id);
+      await _firestoreService.deleteInvoice(id);
       _invoices.removeWhere((invoice) => invoice.id == id);
       notifyListeners();
     } catch (e) {
@@ -51,11 +51,11 @@ class InvoiceProvider with ChangeNotifier {
     }
   }
   
-  Future<Invoice> getInvoiceById(String id) async {
+  Invoice? getInvoiceById(String id) {
     try {
-      return await _databaseService.getInvoice(id);
+      return _invoices.firstWhere((invoice) => invoice.id == id);
     } catch (e) {
-      rethrow;
+      return null;
     }
   }
   

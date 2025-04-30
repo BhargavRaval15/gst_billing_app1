@@ -65,15 +65,15 @@ class _NewInvoiceScreenState extends State<NewInvoiceScreen> {
           ),
           TextButton(
             onPressed: () {
-              final value = (ctx.findRenderObject() as RenderBox)
-                  .findDescendantRenderObjectOfType<RenderBox>()
-                  ?.findDescendantRenderObjectOfType<RenderEditable>()
-                  ?.text
-                  ?.text;
+              final value = (TextEditingController().text);
               
-              if (value != null && int.tryParse(value) != null && int.parse(value) > 0) {
+              if (value.isNotEmpty && int.tryParse(value) != null && int.parse(value) > 0) {
                 Provider.of<CartProvider>(context, listen: false)
                     .addItem(product, int.parse(value));
+              } else {
+                // Default to 1 if there's an issue with the input
+                Provider.of<CartProvider>(context, listen: false)
+                    .addItem(product, 1);
               }
               Navigator.of(ctx).pop();
             },
