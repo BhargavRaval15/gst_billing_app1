@@ -38,6 +38,8 @@ class _NewInvoiceScreenState extends State<NewInvoiceScreen> {
   }
   
   void _addProductToCart(Product product) {
+    final quantityController = TextEditingController(text: '1');
+    
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -48,7 +50,7 @@ class _NewInvoiceScreenState extends State<NewInvoiceScreen> {
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
-          controller: TextEditingController(text: '1'),
+          controller: quantityController,
           autofocus: true,
           onSubmitted: (value) {
             if (int.tryParse(value) != null && int.parse(value) > 0) {
@@ -65,7 +67,7 @@ class _NewInvoiceScreenState extends State<NewInvoiceScreen> {
           ),
           TextButton(
             onPressed: () {
-              final value = (TextEditingController().text);
+              final value = quantityController.text;
               
               if (value.isNotEmpty && int.tryParse(value) != null && int.parse(value) > 0) {
                 Provider.of<CartProvider>(context, listen: false)
